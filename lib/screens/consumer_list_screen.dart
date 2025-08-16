@@ -76,6 +76,9 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
                               BillsForConsumerScreen(consumer: consumer),
                         ),
                       );
+                    } else if (v == 'remove') {
+                      await _removeConsumer(consumer);
+                      _load();
                     }
                     _load();
                   },
@@ -133,6 +136,31 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
         label: const Text('Add'),
       ),
     );
+  }
+
+  // remove consumer
+  Future<void> _removeConsumer(Consumer consumer) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Consumer'),
+        content: Text('Are you sure you want to remove ${consumer.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      await DatabaseService.instance.deleteConsumer(consumer.id!);
+      _load();
+    }
   }
 }
 
@@ -193,6 +221,10 @@ class _ConsumerCard extends StatelessWidget {
                 itemBuilder: (_) => const [
                   PopupMenuItem(value: 'new_bill', child: Text('New Bill')),
                   PopupMenuItem(value: 'bills', child: Text('View Bills')),
+                  PopupMenuItem(
+                    value: 'remove',
+                    child: Text('Remove Consumer'),
+                  ),
                 ],
                 tooltip: 'Actions',
                 icon: const Icon(Icons.more_vert),

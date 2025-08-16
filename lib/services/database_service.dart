@@ -98,6 +98,16 @@ class DatabaseService {
     return MeterReading.fromMap(rows.first);
   }
 
+  // delete consumer and its meter readings
+  Future<void> deleteConsumer(int id) async {
+    await (await db).delete('consumers', where: 'id=?', whereArgs: [id]);
+    await (await db).delete(
+      'meter_readings',
+      where: 'consumer_id=?',
+      whereArgs: [id],
+    );
+  }
+
   // Bills
   Future<int> insertBill(Bill b) async => (await db).insert('bills', b.toMap());
   Future<List<Bill>> getBillsForConsumer(int consumerId) async {
