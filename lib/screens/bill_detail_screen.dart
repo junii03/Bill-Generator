@@ -9,6 +9,7 @@ import '../utils/format.dart';
 import '../models/bill.dart';
 import '../models/consumer.dart';
 import '../models/meter_reading.dart';
+import 'bill_preview_screen.dart';
 
 class BillDetailScreen extends StatefulWidget {
   final int billId;
@@ -56,10 +57,12 @@ class _BillDetailScreenState extends State<BillDetailScreen> {
       reading: reading!,
     );
     setState(() => pdfFile = file);
-    if (mounted)
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('PDF generated')));
+    if (!mounted) return;
+    // Open preview screen immediately
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => BillPreviewScreen(pdfPath: file.path)),
+    );
   }
 
   @override

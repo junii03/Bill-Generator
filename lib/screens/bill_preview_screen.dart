@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_viewer_plus/pdf_viewer.dart';
+import 'package:share_plus/share_plus.dart';
 
 class BillPreviewScreen extends StatelessWidget {
   final String pdfPath;
@@ -10,7 +11,16 @@ class BillPreviewScreen extends StatelessWidget {
     final name = pdfPath.split('/').last;
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text(name)),
+      appBar: AppBar(
+        title: Text(name),
+        actions: [
+          IconButton(
+            tooltip: 'Share',
+            icon: const Icon(Icons.ios_share_outlined),
+            onPressed: () => Share.shareXFiles([XFile(pdfPath)], text: name),
+          ),
+        ],
+      ),
       backgroundColor: scheme.surface,
       body: DecoratedBox(
         decoration: BoxDecoration(

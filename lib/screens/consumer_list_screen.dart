@@ -107,6 +107,8 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: TextField(
+                onTapOutside: (event) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.search),
                   hintText: 'Search consumers',

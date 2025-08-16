@@ -47,13 +47,16 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
         consumer: widget.consumer,
       );
       if (mounted) {
-        ScaffoldMessenger.of(
+        // Open preview screen immediately
+        Navigator.push(
           context,
-        ).showSnackBar(SnackBar(content: Text('Summary PDF: ${file.path}')));
+          MaterialPageRoute(
+            builder: (_) => BillPreviewScreen(pdfPath: file.path),
+          ),
+        );
         await SharePlus.instance.share(
           ShareParams(
             files: [XFile(file.path)],
-            //  text: 'Electricity Bill for ${widget.consumer.name}',
             previewThumbnail: XFile(file.path),
             fileNameOverrides: [
               "${DateTime.now().month}-${DateTime.now().day}-${DateTime.now().year}.pdf",
