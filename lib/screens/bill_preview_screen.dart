@@ -1,14 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:pdf_viewer_plus/pdf_viewer.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:pdfx/pdfx.dart';
 
-class BillPreviewScreen extends StatelessWidget {
+class BillPreviewScreen extends StatefulWidget {
   final String pdfPath;
   const BillPreviewScreen({super.key, required this.pdfPath});
+  @override
+  State<BillPreviewScreen> createState() => _BillPreviewScreenState();
+}
+
+class _BillPreviewScreenState extends State<BillPreviewScreen> {
+  late final PdfControllerPinch _controller;
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    try {
+      _controller = PdfControllerPinch(
+        document: PdfDocument.openFile(widget.pdfPath),
+      );
+      setState(() => _loading = false);
+    } catch (e) {
+      setState(() {
+        _error = 'Failed to load PDF: $e';
+        _loading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    if (!_loading && _error == null) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final name = pdfPath.split('/').last;
+    final name = widget.pdfPath.split('/').last;
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
@@ -17,7 +53,8 @@ class BillPreviewScreen extends StatelessWidget {
           IconButton(
             tooltip: 'Share',
             icon: const Icon(Icons.ios_share_outlined),
-            onPressed: () => Share.shareXFiles([XFile(pdfPath)], text: name),
+            onPressed: () =>
+                Share.shareXFiles([XFile(widget.pdfPath)], text: name),
           ),
         ],
       ),
@@ -33,16 +70,15 @@ class BillPreviewScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: PdfViewer(
-            pdfPath: pdfPath,
-            initialSidebarOpen: true,
-            sidebarWidth: 180,
-            thumbnailHeight: 140,
-            sidebarBackgroundColor: scheme.surfaceContainerHighest,
-          ),
-        ),
+        child: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : _error != null
+            ? Center(child: Text(_error!))
+            : PdfViewPinch(
+                controller: _controller,
+                onDocumentLoaded: (doc) {},
+                onPageChanged: (page) {},
+              ),
       ),
     );
   }
