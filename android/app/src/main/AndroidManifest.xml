@@ -2,7 +2,7 @@
     <!-- Camera permission for capturing meter images -->
     <uses-permission android:name="android.permission.CAMERA" />
     <application
-        android:label="bill_generator"
+        android:label="Bill Generator"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
