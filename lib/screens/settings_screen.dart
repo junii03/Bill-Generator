@@ -14,6 +14,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _currencyCtrl = TextEditingController();
   final _taxCtrl = TextEditingController();
   bool _busy = false;
+  bool _dirty = false; // track unsaved changes
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     final tax = double.tryParse(_taxCtrl.text.trim()) ?? s.defaultTaxPercent;
     await s.setDefaultTaxPercent(tax < 0 ? 0 : tax);
+    setState(() => _dirty = false);
     if (mounted) Navigator.pop(context);
   }
 
@@ -83,61 +85,164 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final settings = context.watch<SettingsProvider>();
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: AbsorbPointer(
-        absorbing: _busy,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            TextField(
-              controller: _currencyCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Currency Symbol (e.g. PKR, EUR, USD)',
+      body: SafeArea(
+        child: AbsorbPointer(
+          absorbing: _busy,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'General',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _currencyCtrl,
+                            decoration: const InputDecoration(
+                              labelText: 'Currency Symbol (e.g. PKR, EUR, USD)',
+                              prefixIcon: Icon(Icons.currency_exchange),
+                            ),
+                            onChanged: (_) => setState(() => _dirty = true),
+                          ),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: _taxCtrl,
+                            decoration: const InputDecoration(
+                              labelText: 'Default Tax Percent (auto added)',
+                              prefixIcon: Icon(Icons.percent),
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            onChanged: (_) => setState(() => _dirty = true),
+                          ),
+                          const SizedBox(height: 12),
+                          SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: const Text('Dark Mode'),
+                            value: settings.darkMode,
+                            onChanged: (v) {
+                              settings.toggleDarkMode(v);
+                              setState(() => _dirty = true);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Backup & Restore',
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              const Spacer(),
+                              if (_busy)
+                                const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: [
+                              FilledButton.icon(
+                                onPressed: _busy ? null : _backup,
+                                icon: const Icon(Icons.download_outlined),
+                                label: const Text('Create Backup'),
+                              ),
+                              OutlinedButton.icon(
+                                onPressed: _busy ? null : _restore,
+                                icon: const Icon(Icons.upload_outlined),
+                                label: const Text('Restore Backup'),
+                              ),
+                            ],
+                          ),
+                          if (_busy) ...[
+                            const SizedBox(height: 16),
+                            const LinearProgressIndicator(minHeight: 3),
+                          ],
+                          const SizedBox(height: 8),
+                          Text(
+                            'Backup creates a .zip archive of your data. Restore will overwrite existing data.',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 80), // spacer for bottom bar
+                ],
               ),
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _taxCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Default Tax Percent (auto added)',
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: AnimatedSlide(
+          duration: const Duration(milliseconds: 250),
+          offset: _dirty ? Offset.zero : const Offset(0, 1),
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 250),
+            opacity: _dirty ? 1 : 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 12,
+                    color: Colors.black.withOpacity(.1),
+                  ),
+                ],
               ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Unsaved changes',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                  FilledButton.icon(
+                    onPressed: _busy ? null : _save,
+                    icon: const Icon(Icons.save_outlined),
+                    label: const Text('Save'),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 12),
-            SwitchListTile(
-              title: const Text('Dark Mode'),
-              value: settings.darkMode,
-              onChanged: (v) => settings.toggleDarkMode(v),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: _save,
-              icon: const Icon(Icons.save),
-              label: const Text('Save Settings'),
-            ),
-            const Divider(height: 40),
-            Text(
-              'Backup & Restore',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              onPressed: _backup,
-              icon: const Icon(Icons.download),
-              label: const Text('Create Backup (.zip)'),
-            ),
-            ElevatedButton.icon(
-              onPressed: _restore,
-              icon: const Icon(Icons.upload),
-              label: const Text('Restore from Backup (.zip)'),
-            ),
-            if (_busy)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-          ],
+          ),
         ),
       ),
     );

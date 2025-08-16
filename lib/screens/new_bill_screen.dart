@@ -7,7 +7,6 @@ import '../models/adjustment.dart';
 import '../services/database_service.dart';
 import '../services/image_service.dart';
 import '../services/settings_service.dart';
-import '../utils/format.dart';
 import 'bill_detail_screen.dart';
 
 class NewBillScreen extends StatefulWidget {
@@ -241,169 +240,270 @@ class _NewBillScreenState extends State<NewBillScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text(
-              'Consumer: ${widget.consumer.name}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _prevCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Previous Reading (kWh)',
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Consumer: ${widget.consumer.name}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    validator: (v) =>
-                        v == null || double.tryParse(v.trim()) == null
-                        ? 'Required'
-                        : null,
-                    onChanged: (_) => setState(() {}),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextFormField(
-                    controller: _currCtrl,
-                    decoration: const InputDecoration(
-                      labelText: 'Current Reading (kWh)',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    validator: (v) {
-                      if (v == null || double.tryParse(v.trim()) == null)
-                        return 'Required';
-                      final curr = double.parse(v.trim());
-                      final prev = double.tryParse(_prevCtrl.text.trim()) ?? 0;
-                      if (curr < prev) return 'Must be >= previous';
-                      return null;
-                    },
-                    onChanged: (_) => setState(() {}),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Meter Images',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _prevCtrl,
+                            decoration: const InputDecoration(
+                              labelText: 'Previous Reading (kWh)',
+                              prefixIcon: Icon(Icons.history),
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            validator: (v) =>
+                                v == null || double.tryParse(v.trim()) == null
+                                ? 'Required'
+                                : null,
+                            onChanged: (_) => setState(() {}),
                           ),
                         ),
-                        child: prevImagePath == null
-                            ? const Center(child: Text('Prev'))
-                            : Image.file(
-                                File(prevImagePath!),
-                                fit: BoxFit.cover,
-                              ),
-                      ),
-                      TextButton.icon(
-                        onPressed: () => _chooseImage(true),
-                        icon: const Icon(Icons.add_a_photo),
-                        label: const Text('Prev (Cam/Gallery)'),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _currCtrl,
+                            decoration: const InputDecoration(
+                              labelText: 'Current Reading (kWh)',
+                              prefixIcon: Icon(Icons.speed),
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            validator: (v) {
+                              if (v == null ||
+                                  double.tryParse(v.trim()) == null)
+                                return 'Required';
+                              final curr = double.parse(v.trim());
+                              final prev =
+                                  double.tryParse(_prevCtrl.text.trim()) ?? 0;
+                              if (curr < prev) return 'Must be >= previous';
+                              return null;
+                            },
+                            onChanged: (_) => setState(() {}),
                           ),
                         ),
-                        child: currImagePath == null
-                            ? const Center(child: Text('Curr'))
-                            : Image.file(
-                                File(currImagePath!),
-                                fit: BoxFit.cover,
-                              ),
-                      ),
-                      TextButton.icon(
-                        onPressed: () => _chooseImage(false),
-                        icon: const Icon(Icons.add_a_photo),
-                        label: const Text('Curr (Cam/Gallery)'),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Adjustments',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                IconButton(
-                  onPressed: _addAdjustmentDialog,
-                  icon: const Icon(Icons.add),
-                ),
-              ],
-            ),
-            if (adjustments.isEmpty) const Text('None'),
-            if (adjustments.isNotEmpty)
-              ...adjustments.asMap().entries.map(
-                (e) => ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(e.value.label),
-                  subtitle: Text(e.value.amount.toStringAsFixed(2)),
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Theme.of(context).colorScheme.error,
+                      ],
                     ),
-                    onPressed: () =>
-                        setState(() => adjustments.removeAt(e.key)),
-                  ),
+                  ],
                 ),
               ),
-            const Divider(height: 32),
-            Text('Consumed: ${consumed.toStringAsFixed(2)} kWh'),
-            Text(
-              'Base: ${FormatUtil.money(baseAmount, context.read<SettingsProvider>())}',
             ),
-            Text(
-              'Adjustments: ${FormatUtil.money(adjustmentsTotal + defaultTaxAmount, context.read<SettingsProvider>())} (incl. default tax preview)',
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Meter Images',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              _ImageBox(path: prevImagePath, label: 'Prev'),
+                              TextButton.icon(
+                                onPressed: () => _chooseImage(true),
+                                icon: const Icon(Icons.add_a_photo_outlined),
+                                label: const Text('Prev (Cam/Gallery)'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              _ImageBox(path: currImagePath, label: 'Curr'),
+                              TextButton.icon(
+                                onPressed: () => _chooseImage(false),
+                                icon: const Icon(Icons.add_a_photo_outlined),
+                                label: const Text('Curr (Cam/Gallery)'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Text(
-              'Total: ${FormatUtil.money(totalAmount + defaultTaxAmount, context.read<SettingsProvider>())}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Adjustments',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        IconButton(
+                          onPressed: _addAdjustmentDialog,
+                          icon: const Icon(Icons.add_circle_outline),
+                          tooltip: 'Add Adjustment',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    if (adjustments.isEmpty) const Text('None'),
+                    if (adjustments.isNotEmpty)
+                      ...adjustments.asMap().entries.map(
+                        (e) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(e.value.label),
+                          subtitle: Text(e.value.amount.toStringAsFixed(2)),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.delete_outline,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            onPressed: () =>
+                                setState(() => adjustments.removeAt(e.key)),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            _TotalsPreview(
+              consumed: consumed,
+              baseAmount: baseAmount,
+              adjustmentsTotal: adjustmentsTotal + defaultTaxAmount,
+              totalAmount: totalAmount + defaultTaxAmount,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
+            FilledButton.icon(
               onPressed: saving ? null : _save,
-              child: saving
-                  ? const CircularProgressIndicator()
-                  : const Text('Save Bill'),
+              icon: saving
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.save_outlined),
+              label: Text(saving ? 'Saving...' : 'Save Bill'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ImageBox extends StatelessWidget {
+  final String? path;
+  final String label;
+  const _ImageBox({required this.path, required this.label});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 140,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withOpacity(.4),
+        ),
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+      ),
+      child: path == null
+          ? Center(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            )
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(
+                File(path!),
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            ),
+    );
+  }
+}
+
+class _TotalsPreview extends StatelessWidget {
+  final double consumed;
+  final double baseAmount;
+  final double adjustmentsTotal;
+  final double totalAmount;
+  const _TotalsPreview({
+    required this.consumed,
+    required this.baseAmount,
+    required this.adjustmentsTotal,
+    required this.totalAmount,
+  });
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      _KV('Consumed', '${consumed.toStringAsFixed(2)} kWh'),
+      _KV('Base', baseAmount.toStringAsFixed(2)),
+      _KV('Adjust.', adjustmentsTotal.toStringAsFixed(2)),
+      _KV('Total', totalAmount.toStringAsFixed(2), highlight: true),
+    ];
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Wrap(spacing: 24, runSpacing: 12, children: items),
+      ),
+    );
+  }
+}
+
+class _KV extends StatelessWidget {
+  final String k;
+  final String v;
+  final bool highlight;
+  const _KV(this.k, this.v, {this.highlight = false});
+  @override
+  Widget build(BuildContext context) {
+    final style = highlight
+        ? Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)
+        : Theme.of(context).textTheme.bodyMedium;
+    return SizedBox(
+      width: 120,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            k,
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 4),
+          Text(v, style: style),
+        ],
       ),
     );
   }

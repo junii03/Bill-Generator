@@ -7,14 +7,32 @@ class BillPreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final name = pdfPath.split('/').last;
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Text('PDF Viewer with Thumbnails')),
-      body: PdfViewer(
-        pdfPath: pdfPath,
-        initialSidebarOpen: true, // Start with sidebar open
-        sidebarWidth: 180, // Custom sidebar width
-        thumbnailHeight: 160, // Custom thumbnail height
-        sidebarBackgroundColor: Colors.grey[300]!, // Custom sidebar color
+      appBar: AppBar(title: Text(name)),
+      backgroundColor: scheme.surface,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              scheme.surface,
+              scheme.surfaceContainerHighest.withOpacity(.4),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: PdfViewer(
+            pdfPath: pdfPath,
+            initialSidebarOpen: true,
+            sidebarWidth: 180,
+            thumbnailHeight: 140,
+            sidebarBackgroundColor: scheme.surfaceContainerHighest,
+          ),
+        ),
       ),
     );
   }
