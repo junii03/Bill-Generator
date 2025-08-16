@@ -30,6 +30,20 @@ class _NewBillScreenState extends State<NewBillScreen> {
   @override
   void initState() {
     super.initState();
+    _loadLastReading();
+  }
+
+  Future<void> _loadLastReading() async {
+    final last = await DatabaseService.instance.getLastMeterReadingForConsumer(
+      widget.consumer.id!,
+    );
+    if (!mounted || last == null) return;
+    setState(() {
+      // Use last current as new previous
+      _prevCtrl.text = last.currentReading.toStringAsFixed(2);
+      // Carry forward the last current image as the new previous image reference
+      prevImagePath = last.currentImagePath;
+    });
   }
 
   double get consumed {
@@ -49,8 +63,8 @@ class _NewBillScreenState extends State<NewBillScreen> {
   double get adjustmentsTotal => adjustments.fold(0, (s, a) => s + a.amount);
   double get totalAmount => baseAmount + adjustmentsTotal;
 
-  Future<void> _pickImage(bool previous) async {
-    final path = await ImageService.pickAndStore(isCamera: true);
+  Future<void> _pickImage(bool previous, {required bool camera}) async {
+    final path = await ImageService.pickAndStore(isCamera: camera);
     if (path != null) {
       setState(() {
         if (previous) {
@@ -60,6 +74,53 @@ class _NewBillScreenState extends State<NewBillScreen> {
         }
       });
     }
+  }
+
+  Future<void> _chooseImage(bool previous) async {
+    if (!mounted) return;
+    await showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Camera'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _pickImage(previous, camera: true);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Gallery'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _pickImage(previous, camera: false);
+              },
+            ),
+            if (previous && prevImagePath != null)
+              ListTile(
+                leading: const Icon(Icons.restart_alt),
+                title: const Text('Clear / Reset'),
+                onTap: () {
+                  setState(() => prevImagePath = null);
+                  Navigator.pop(ctx);
+                },
+              ),
+            if (!previous && currImagePath != null)
+              ListTile(
+                leading: const Icon(Icons.restart_alt),
+                title: const Text('Clear / Reset'),
+                onTap: () {
+                  setState(() => currImagePath = null);
+                  Navigator.pop(ctx);
+                },
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _addAdjustmentDialog() async {
@@ -240,7 +301,11 @@ class _NewBillScreenState extends State<NewBillScreen> {
                       Container(
                         height: 120,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
+                          border: Border.all(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
                         ),
                         child: prevImagePath == null
                             ? const Center(child: Text('Prev'))
@@ -250,9 +315,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                               ),
                       ),
                       TextButton.icon(
-                        onPressed: () => _pickImage(true),
-                        icon: const Icon(Icons.camera_alt),
-                        label: const Text('Prev'),
+                        onPressed: () => _chooseImage(true),
+                        icon: const Icon(Icons.add_a_photo),
+                        label: const Text('Prev (Cam/Gallery)'),
                       ),
                     ],
                   ),
@@ -264,7 +329,11 @@ class _NewBillScreenState extends State<NewBillScreen> {
                       Container(
                         height: 120,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
+                          border: Border.all(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
                         ),
                         child: currImagePath == null
                             ? const Center(child: Text('Curr'))
@@ -274,9 +343,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                               ),
                       ),
                       TextButton.icon(
-                        onPressed: () => _pickImage(false),
-                        icon: const Icon(Icons.camera_alt),
-                        label: const Text('Curr'),
+                        onPressed: () => _chooseImage(false),
+                        icon: const Icon(Icons.add_a_photo),
+                        label: const Text('Curr (Cam/Gallery)'),
                       ),
                     ],
                   ),
@@ -305,7 +374,10 @@ class _NewBillScreenState extends State<NewBillScreen> {
                   title: Text(e.value.label),
                   subtitle: Text(e.value.amount.toStringAsFixed(2)),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                     onPressed: () =>
                         setState(() => adjustments.removeAt(e.key)),
                   ),

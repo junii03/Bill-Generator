@@ -86,6 +86,18 @@ class DatabaseService {
     return MeterReading.fromMap(rows.first);
   }
 
+  Future<MeterReading?> getLastMeterReadingForConsumer(int consumerId) async {
+    final rows = await (await db).query(
+      'meter_readings',
+      where: 'consumer_id=?',
+      whereArgs: [consumerId],
+      orderBy: 'reading_date DESC',
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return MeterReading.fromMap(rows.first);
+  }
+
   // Bills
   Future<int> insertBill(Bill b) async => (await db).insert('bills', b.toMap());
   Future<List<Bill>> getBillsForConsumer(int consumerId) async {

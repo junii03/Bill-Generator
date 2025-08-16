@@ -35,9 +35,11 @@ class MyApp extends StatelessWidget {
             ? AppTheme.dark('')
             : AppTheme.light('');
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Electricity Billing',
           theme: theme,
           darkTheme: AppTheme.dark(''),
+          themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
           home: const ConsumerListScreen(),
           routes: {SettingsScreen.route: (_) => const SettingsScreen()},
         );
