@@ -76,31 +76,25 @@ class _NewBillScreenState extends State<NewBillScreen> {
   double get totalAmount => baseAmount + adjustmentsTotal;
 
   Future<void> _pickImage(bool previous, {required bool camera}) async {
-    // Use stable per-consumer file so it always overwrites
-    final path = await ImageService.pickAndStoreForConsumer(
-      consumerId: widget.consumer.id!,
-      isCamera: camera,
-    );
+    // Pick a distinct image for previous or current reading.
+    final path = await ImageService.pickAndStore(isCamera: camera);
     if (path != null) {
       setState(() {
-        // Keep only one physical file; both references point to same path
         if (previous) {
-          // Delete other reference file if somehow different
-          if (currImagePath != null && currImagePath != path) {
-            try {
-              File(currImagePath!).deleteSync();
-            } catch (_) {}
-          }
-          prevImagePath = path;
-          currImagePath = path; // unify
-        } else {
+          // Remove previously selected previous image if replacing
           if (prevImagePath != null && prevImagePath != path) {
             try {
               File(prevImagePath!).deleteSync();
             } catch (_) {}
           }
+          prevImagePath = path;
+        } else {
+          if (currImagePath != null && currImagePath != path) {
+            try {
+              File(currImagePath!).deleteSync();
+            } catch (_) {}
+          }
           currImagePath = path;
-          prevImagePath = path; // unify
         }
       });
     }
