@@ -1,6 +1,6 @@
+import 'package:bill_generator/screens/bill_preview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:printing/printing.dart';
 import '../models/consumer.dart';
 import '../models/bill.dart';
 import '../services/database_service.dart';
@@ -50,13 +50,23 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Summary PDF: ${file.path}')));
-        await Share.shareXFiles([XFile(file.path)], text: 'Bills Summary');
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path)],
+            //  text: 'Electricity Bill for ${widget.consumer.name}',
+            previewThumbnail: XFile(file.path),
+            fileNameOverrides: [
+              "${DateTime.now().month}-${DateTime.now().day}-${DateTime.now().year}.pdf",
+            ],
+          ),
+        );
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
+      }
     } finally {
       if (mounted) setState(() => exporting = false);
     }
@@ -83,7 +93,14 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
         reading: reading,
       );
       if (!mounted) return;
-      await Printing.layoutPdf(onLayout: (_) async => await file.readAsBytes());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BillPreviewScreen(pdfPath: file.path),
+        ),
+      ).then((_) {
+        if (mounted) setState(() => _openingBillId = null);
+      });
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
