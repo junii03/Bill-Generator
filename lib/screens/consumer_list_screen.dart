@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/consumer.dart';
 import '../services/database_service.dart';
@@ -36,7 +37,7 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
   void _addConsumer() async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const AddConsumerScreen()),
+      CupertinoPageRoute(builder: (_) => const AddConsumerScreen()),
     );
     _load();
   }
@@ -64,14 +65,14 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
                     if (v == 'new_bill') {
                       await Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (_) => NewBillScreen(consumer: consumer),
                         ),
                       );
                     } else if (v == 'bills') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (_) =>
                               BillsForConsumerScreen(consumer: consumer),
                         ),

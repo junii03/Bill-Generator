@@ -72,6 +72,15 @@ class DatabaseService {
     return Consumer.fromMap(rows.first);
   }
 
+  Future<void> updateConsumerCost(int id, double costPerUnit) async {
+    await (await db).update(
+      'consumers',
+      {'cost_per_unit': costPerUnit},
+      where: 'id=?',
+      whereArgs: [id],
+    );
+  }
+
   // Meter readings
   Future<int> insertMeterReading(MeterReading r) async =>
       (await db).insert('meter_readings', r.toMap());
@@ -152,6 +161,18 @@ class DatabaseService {
     );
     final id = await insertBill(bill);
     return bill.copyWith(id: id);
+  }
+
+  Future<void> deleteBill(int id) async {
+    await (await db).delete('bills', where: 'id=?', whereArgs: [id]);
+  }
+
+  Future<void> deleteBillsForConsumer(int consumerId) async {
+    await (await db).delete(
+      'bills',
+      where: 'consumer_id=?',
+      whereArgs: [consumerId],
+    );
   }
 }
 

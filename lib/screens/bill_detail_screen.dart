@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:provider/provider.dart' hide Consumer;
@@ -61,7 +62,7 @@ class _BillDetailScreenState extends State<BillDetailScreen> {
     // Open preview screen immediately
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => BillPreviewScreen(pdfPath: file.path)),
+      CupertinoPageRoute(builder: (_) => BillPreviewScreen(pdfPath: file.path)),
     );
   }
 

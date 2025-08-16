@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' hide Consumer;
 import '../models/consumer.dart';
@@ -21,6 +22,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
   final _formKey = GlobalKey<FormState>();
   final _prevCtrl = TextEditingController();
   final _currCtrl = TextEditingController();
+  final _costCtrl = TextEditingController();
   List<Adjustment> adjustments = [];
   String? prevImagePath;
   String? currImagePath;
@@ -29,7 +31,16 @@ class _NewBillScreenState extends State<NewBillScreen> {
   @override
   void initState() {
     super.initState();
+    _costCtrl.text = widget.consumer.costPerUnit.toStringAsFixed(2);
     _loadLastReading();
+  }
+
+  @override
+  void dispose() {
+    _costCtrl.dispose();
+    _prevCtrl.dispose();
+    _currCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> _loadLastReading() async {
@@ -52,7 +63,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
     return diff < 0 ? 0 : diff;
   }
 
-  double get baseAmount => consumed * widget.consumer.costPerUnit;
+  double get effectiveCostPerUnit =>
+      double.tryParse(_costCtrl.text.trim()) ?? widget.consumer.costPerUnit;
+  double get baseAmount => consumed * effectiveCostPerUnit;
   double get defaultTaxAmount {
     final settings = context.read<SettingsProvider>();
     if (settings.defaultTaxPercent <= 0) return 0;
@@ -192,6 +205,18 @@ class _NewBillScreenState extends State<NewBillScreen> {
     }
     setState(() => saving = true);
     final settings = context.read<SettingsProvider>();
+
+    // Update consumer cost per unit if it changed
+    final newCost = effectiveCostPerUnit;
+    Consumer consumerForBill = widget.consumer;
+    if ((newCost - widget.consumer.costPerUnit).abs() > 0.0001) {
+      await DatabaseService.instance.updateConsumerCost(
+        widget.consumer.id!,
+        newCost,
+      );
+      consumerForBill = widget.consumer.copyWith(costPerUnit: newCost);
+    }
+
     final reading = MeterReading(
       consumerId: widget.consumer.id!,
       previousReading: double.parse(_prevCtrl.text.trim()),
@@ -219,14 +244,14 @@ class _NewBillScreenState extends State<NewBillScreen> {
     }
 
     final bill = await DatabaseService.instance.createBill(
-      consumer: widget.consumer,
+      consumer: consumerForBill,
       reading: readingPersisted,
       adjustments: adjList,
     );
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => BillDetailScreen(billId: bill.id!)),
+        CupertinoPageRoute(builder: (_) => BillDetailScreen(billId: bill.id!)),
       );
     }
   }
@@ -295,6 +320,25 @@ class _NewBillScreenState extends State<NewBillScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _costCtrl,
+                      decoration: const InputDecoration(
+                        labelText: 'Cost Per Unit (kWh)',
+                        prefixIcon: Icon(Icons.attach_money),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) return 'Required';
+                        final d = double.tryParse(v.trim());
+                        if (d == null) return 'Invalid';
+                        if (d <= 0) return 'Must be > 0';
+                        return null;
+                      },
+                      onChanged: (_) => setState(() {}),
                     ),
                   ],
                 ),

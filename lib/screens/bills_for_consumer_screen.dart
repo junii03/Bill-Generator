@@ -1,4 +1,5 @@
 import 'package:bill_generator/screens/bill_preview_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/consumer.dart';
@@ -50,7 +51,7 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
         // Open preview screen immediately
         Navigator.push(
           context,
-          MaterialPageRoute(
+          CupertinoPageRoute(
             builder: (_) => BillPreviewScreen(pdfPath: file.path),
           ),
         );
@@ -98,7 +99,7 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
       if (!mounted) return;
       Navigator.push(
         context,
-        MaterialPageRoute(
+        CupertinoPageRoute(
           builder: (_) => BillPreviewScreen(pdfPath: file.path),
         ),
       ).then((_) {
@@ -112,6 +113,35 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
       }
     } finally {
       if (mounted) setState(() => _openingBillId = null);
+    }
+  }
+
+  Future<void> _removeBill(Bill bill) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Delete Bill'),
+        content: const Text('Are you sure you want to delete this bill?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(c, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(c, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    await DatabaseService.instance.deleteBill(bill.id!);
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Bill deleted')));
+      _load();
     }
   }
 
@@ -152,7 +182,7 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
                       onPressed: () async {
                         await Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          CupertinoPageRoute(
                             builder: (_) =>
                                 NewBillScreen(consumer: widget.consumer),
                           ),
@@ -178,13 +208,45 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
                       bill: b,
                       opening: _openingBillId == b.id,
                       fmt: _fmt,
-                      onOpen: () => _openBillPdf(b),
-                      onLongPress: () => Navigator.push(
+                      onOpen: () => Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (_) => BillDetailScreen(billId: b.id!),
                         ),
                       ).then((_) => _load()),
+                      onLongPress: () {
+                        // show options to open , share or delete
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (_) => Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.picture_as_pdf_outlined,
+                                  ),
+                                  title: const Text('Open PDF'),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    _openBillPdf(b);
+                                  },
+                                ),
+
+                                ListTile(
+                                  leading: const Icon(Icons.delete),
+                                  title: const Text('Delete'),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    _removeBill(b);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -210,7 +272,7 @@ class _BillsForConsumerScreenState extends State<BillsForConsumerScreen> {
             onPressed: () async {
               await Navigator.push(
                 context,
-                MaterialPageRoute(
+                CupertinoPageRoute(
                   builder: (_) => NewBillScreen(consumer: widget.consumer),
                 ),
               );
