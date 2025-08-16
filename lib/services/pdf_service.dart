@@ -353,9 +353,8 @@ class PdfService {
     );
 
     final dir = await _billsDir();
-    final file = File(
-      '${dir.path}/bill_${bill.id}_${bill.createdAt.millisecondsSinceEpoch}.pdf',
-    );
+    // Overwrite existing per-bill PDF (single file per bill id)
+    final file = File('${dir.path}/bill_${bill.id}.pdf');
     await file.writeAsBytes(await doc.save());
     return file;
   }
@@ -489,9 +488,8 @@ class PdfService {
       ),
     );
     final dir = await _billsDir();
-    final file = File(
-      '${dir.path}/bills_summary_${consumer.id}_${DateTime.now().millisecondsSinceEpoch}.pdf',
-    );
+    // Overwrite existing summary PDF per consumer
+    final file = File('${dir.path}/bills_summary_${consumer.id}.pdf');
     await file.writeAsBytes(await doc.save());
     return file;
   }

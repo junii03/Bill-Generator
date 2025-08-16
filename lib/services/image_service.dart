@@ -20,6 +20,27 @@ class ImageService {
     return newPath;
   }
 
+  /// Overwrite (or create) a single persistent image file per consumer.
+  /// Returns the stable file path (meter_<consumerId>.jpg).
+  static Future<String?> pickAndStoreForConsumer({
+    required int consumerId,
+    required bool isCamera,
+  }) async {
+    final XFile? file = await _picker.pickImage(
+      source: isCamera ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (file == null) return null;
+    final dir = await _meterImagesDir();
+    final path = '${dir.path}/meter_$consumerId.jpg';
+    final out = File(path);
+    if (out.existsSync()) {
+      await out.delete();
+    }
+    await File(file.path).copy(path);
+    return path;
+  }
+
   static Future<Directory> _meterImagesDir() async {
     final docs = await getApplicationDocumentsDirectory();
     final dir = Directory('${docs.path}/meter_images');
