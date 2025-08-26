@@ -90,7 +90,7 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Consumers'),
+        title: const Text('Bill Generator'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -101,23 +101,29 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(64),
+          preferredSize: const Size.fromHeight(72),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(16),
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: TextField(
                 onTapOutside: (event) =>
                     FocusManager.instance.primaryFocus?.unfocus(),
                 decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Search consumers',
+                  prefixIcon: Icon(Icons.search_rounded),
+                  hintText: 'Search consumers...',
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                 ),
                 onChanged: (v) => setState(() => _query = v),
               ),
@@ -125,16 +131,29 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
           ),
         ),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 700),
-          child: body,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.1),
+            ],
+          ),
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: body,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addConsumer,
-        icon: const Icon(Icons.person_add_alt_1),
-        label: const Text('Add'),
+        icon: const Icon(Icons.person_add_alt_1_rounded),
+        label: const Text('Add Consumer'),
+        extendedPadding: const EdgeInsets.symmetric(horizontal: 24),
       ),
     );
   }
@@ -144,15 +163,29 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Remove Consumer'),
-        content: Text('Are you sure you want to remove ${consumer.name}?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Theme.of(context).colorScheme.error),
+            const SizedBox(width: 12),
+            const Text('Remove Consumer'),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to remove "${consumer.name}"? This action cannot be undone and will also remove all associated bills.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
-          TextButton(
+          FilledButton(
             onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
             child: const Text('Remove'),
           ),
         ],
@@ -173,64 +206,147 @@ class _ConsumerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 1,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () => onAction('bills'),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 8, 14),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 26,
-                backgroundColor: scheme.primaryContainer,
-                child: Text(
-                  consumer.name.isNotEmpty
-                      ? consumer.name.substring(0, 1).toUpperCase()
-                      : '?',
-                  style: TextStyle(
-                    color: scheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(24),
+        shadowColor: scheme.primary.withOpacity(0.1),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(24),
+          onTap: () => onAction('bills'),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  scheme.surface,
+                  scheme.surfaceContainerHighest.withOpacity(0.3),
+                ],
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      consumer.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Cost/Unit: ${consumer.costPerUnit}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Hero(
+                    tag: 'consumer-${consumer.id}',
+                    child: Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            scheme.primaryContainer,
+                            scheme.secondaryContainer,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: scheme.primary.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          consumer.name.isNotEmpty
+                              ? consumer.name.substring(0, 1).toUpperCase()
+                              : '?',
+                          style: TextStyle(
+                            color: scheme.onPrimaryContainer,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              PopupMenuButton<String>(
-                onSelected: onAction,
-                itemBuilder: (_) => const [
-                  PopupMenuItem(value: 'new_bill', child: Text('New Bill')),
-                  PopupMenuItem(value: 'bills', child: Text('View Bills')),
-                  PopupMenuItem(
-                    value: 'remove',
-                    child: Text('Remove Consumer'),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          consumer.name,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: scheme.onSurface,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: scheme.primaryContainer.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${consumer.costPerUnit.toStringAsFixed(2)} per unit',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: scheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainerHighest.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: PopupMenuButton<String>(
+                      onSelected: onAction,
+                      itemBuilder: (_) => [
+                        PopupMenuItem(
+                          value: 'new_bill',
+                          child: Row(
+                            children: [
+                              Icon(Icons.receipt_long_rounded, size: 20, color: scheme.primary),
+                              const SizedBox(width: 12),
+                              const Text('New Bill'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'bills',
+                          child: Row(
+                            children: [
+                              Icon(Icons.history_rounded, size: 20, color: scheme.secondary),
+                              const SizedBox(width: 12),
+                              const Text('View Bills'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'remove',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete_outline_rounded, size: 20, color: scheme.error),
+                              const SizedBox(width: 12),
+                              const Text('Remove'),
+                            ],
+                          ),
+                        ),
+                      ],
+                      tooltip: 'More actions',
+                      icon: Icon(Icons.more_vert_rounded, color: scheme.onSurfaceVariant),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
                   ),
                 ],
-                tooltip: 'Actions',
-                icon: const Icon(Icons.more_vert),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -250,25 +366,61 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.groups_2_outlined, size: 72, color: scheme.primary),
-            const SizedBox(height: 16),
-            Text(
-              'No consumers yet',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add your first consumer to start generating bills.',
-              textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    scheme.primaryContainer.withOpacity(0.3),
+                    scheme.secondaryContainer.withOpacity(0.3),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Icon(
+                Icons.groups_2_rounded,
+                size: 64,
+                color: scheme.primary,
+              ),
             ),
             const SizedBox(height: 24),
+            Text(
+              'Welcome to Bill Generator!',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: scheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Add your first consumer to start generating professional electricity bills.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: scheme.onSurfaceVariant,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 32),
             FilledButton.icon(
               onPressed: onAdd,
-              icon: const Icon(Icons.person_add_alt_1),
-              label: const Text('Add Consumer'),
+              icon: const Icon(Icons.person_add_alt_1_rounded),
+              label: const Text('Add Your First Consumer'),
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                textStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.pushNamed(context, SettingsScreen.route),
+              icon: const Icon(Icons.settings_rounded),
+              label: const Text('Configure Settings'),
             ),
           ],
         ),
