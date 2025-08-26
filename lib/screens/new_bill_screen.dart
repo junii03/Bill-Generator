@@ -231,7 +231,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
       builder: (_) {
         final scheme = Theme.of(context).colorScheme;
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           title: Row(
             children: [
               Container(
@@ -263,8 +265,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                     hintText: 'e.g., Discount, Late Fee',
                     prefixIcon: Icon(Icons.label_outline_rounded),
                   ),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Label is required' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Label is required'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -279,8 +282,10 @@ class _NewBillScreenState extends State<NewBillScreen> {
                     signed: true,
                   ),
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Amount is required';
-                    if (double.tryParse(v.trim()) == null) return 'Invalid number';
+                    if (v == null || v.trim().isEmpty)
+                      return 'Amount is required';
+                    if (double.tryParse(v.trim()) == null)
+                      return 'Invalid number';
                     return null;
                   },
                 ),
@@ -302,9 +307,8 @@ class _NewBillScreenState extends State<NewBillScreen> {
                       Expanded(
                         child: Text(
                           'Use positive values for charges, negative for discounts',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ),
                     ],
@@ -324,18 +328,18 @@ class _NewBillScreenState extends State<NewBillScreen> {
                   setState(() {
                     adjustments.add(
                       Adjustment(
-                      label: labelCtrl.text.trim(),
-                      amount: double.parse(amountCtrl.text.trim()),
-                    ),
-                  );
-                });
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Add Adjustment'),
-          ),
-        ],
-      );
+                        label: labelCtrl.text.trim(),
+                        amount: double.parse(amountCtrl.text.trim()),
+                      ),
+                    );
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Add Adjustment'),
+            ),
+          ],
+        );
       },
     );
   }
