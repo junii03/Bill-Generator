@@ -459,14 +459,19 @@ class _NewBillScreenState extends State<NewBillScreen> {
                           height: 56,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [scheme.primaryContainer, scheme.secondaryContainer],
+                              colors: [
+                                scheme.primaryContainer,
+                                scheme.secondaryContainer,
+                              ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Center(
                             child: Text(
                               widget.consumer.name.isNotEmpty
-                                  ? widget.consumer.name.substring(0, 1).toUpperCase()
+                                  ? widget.consumer.name
+                                        .substring(0, 1)
+                                        .toUpperCase()
                                   : '?',
                               style: TextStyle(
                                 color: scheme.onPrimaryContainer,
@@ -483,24 +488,29 @@ class _NewBillScreenState extends State<NewBillScreen> {
                             children: [
                               Text(
                                 widget.consumer.name,
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: scheme.onSurface,
-                                ),
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: scheme.onSurface,
+                                    ),
                               ),
                               const SizedBox(height: 4),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: scheme.primary.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
                                   '${widget.consumer.costPerUnit.toStringAsFixed(2)} per kWh',
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: scheme.primary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: scheme.primary,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                 ),
                               ),
                             ],
@@ -529,14 +539,19 @@ class _NewBillScreenState extends State<NewBillScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.speed_rounded, color: scheme.primary, size: 24),
+                          Icon(
+                            Icons.speed_rounded,
+                            color: scheme.primary,
+                            size: 24,
+                          ),
                           const SizedBox(width: 12),
                           Text(
                             'Meter Readings',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: scheme.onSurface,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: scheme.onSurface,
+                                ),
                           ),
                         ],
                       ),
@@ -551,13 +566,14 @@ class _NewBillScreenState extends State<NewBillScreen> {
                                 hintText: 'kWh',
                                 prefixIcon: Icon(Icons.history_rounded),
                               ),
-                              keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
                               validator: (v) =>
                                   v == null || double.tryParse(v.trim()) == null
-                                      ? 'Required'
-                                      : null,
+                                  ? 'Required'
+                                  : null,
                               onChanged: (_) => setState(() {}),
                             ),
                           ),
@@ -570,14 +586,17 @@ class _NewBillScreenState extends State<NewBillScreen> {
                                 hintText: 'kWh',
                                 prefixIcon: Icon(Icons.speed_rounded),
                               ),
-                              keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
                               validator: (v) {
-                                if (v == null || double.tryParse(v.trim()) == null)
+                                if (v == null ||
+                                    double.tryParse(v.trim()) == null)
                                   return 'Required';
                                 final curr = double.parse(v.trim());
-                                final prev = double.tryParse(_prevCtrl.text.trim()) ?? 0;
+                                final prev =
+                                    double.tryParse(_prevCtrl.text.trim()) ?? 0;
                                 if (curr < prev) return 'Must be >= previous';
                                 return null;
                               },
@@ -596,14 +615,18 @@ class _NewBillScreenState extends State<NewBillScreen> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.electric_bolt_rounded, color: scheme.tertiary),
+                              Icon(
+                                Icons.electric_bolt_rounded,
+                                color: scheme.tertiary,
+                              ),
                               const SizedBox(width: 12),
                               Text(
                                 'Consumption: ${consumed.toStringAsFixed(2)} kWh',
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: scheme.onTertiaryContainer,
-                                ),
+                                style: Theme.of(context).textTheme.bodyLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: scheme.onTertiaryContainer,
+                                    ),
                               ),
                             ],
                           ),
