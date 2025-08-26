@@ -234,7 +234,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   height: 48,
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
-                                      colors: [scheme.primaryContainer, scheme.secondaryContainer],
+                                      colors: [
+                                        scheme.primaryContainer,
+                                        scheme.secondaryContainer,
+                                      ],
                                     ),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -247,10 +250,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 const SizedBox(width: 16),
                                 Text(
                                   'General Settings',
-                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: scheme.onSurface,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        color: scheme.onSurface,
+                                      ),
                                 ),
                               ],
                             ),
@@ -260,7 +266,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               decoration: const InputDecoration(
                                 labelText: 'Currency Symbol',
                                 hintText: 'e.g. PKR, EUR, USD',
-                                prefixIcon: Icon(Icons.currency_exchange_rounded),
+                                prefixIcon: Icon(
+                                  Icons.currency_exchange_rounded,
+                                ),
                               ),
                               onChanged: (_) => setState(() => _dirty = true),
                             ),
@@ -272,16 +280,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 hintText: 'Auto-added to bills',
                                 prefixIcon: Icon(Icons.percent_rounded),
                               ),
-                              keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
                               onChanged: (_) => setState(() => _dirty = true),
                             ),
                             const SizedBox(height: 24),
                             Container(
                               padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
-                                color: scheme.surfaceContainerHighest.withOpacity(0.5),
+                                color: scheme.surfaceContainerHighest
+                                    .withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
                                   color: scheme.outline.withOpacity(0.2),
@@ -293,36 +303,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     width: 40,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      color: settings.darkMode 
+                                      color: settings.darkMode
                                           ? scheme.primary.withOpacity(0.2)
                                           : scheme.surfaceContainerHighest,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: Icon(
-                                      settings.darkMode 
-                                          ? Icons.dark_mode_rounded 
+                                      settings.darkMode
+                                          ? Icons.dark_mode_rounded
                                           : Icons.light_mode_rounded,
-                                      color: settings.darkMode ? scheme.primary : scheme.onSurfaceVariant,
+                                      color: settings.darkMode
+                                          ? scheme.primary
+                                          : scheme.onSurfaceVariant,
                                       size: 20,
                                     ),
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Dark Mode',
-                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
                                           'Switch between light and dark themes',
-                                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: scheme.onSurfaceVariant,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: scheme.onSurfaceVariant,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -363,7 +382,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: scheme.tertiaryContainer.withOpacity(0.3),
+                                    color: scheme.tertiaryContainer.withOpacity(
+                                      0.3,
+                                    ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Icon(
@@ -376,10 +397,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Expanded(
                                   child: Text(
                                     'Backup & Restore',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: scheme.onSurface,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: scheme.onSurface,
+                                        ),
                                   ),
                                 ),
                                 if (_busy)
@@ -402,7 +426,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     icon: const Icon(Icons.download_rounded),
                                     label: const Text('Create Backup'),
                                     style: FilledButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -413,7 +439,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     icon: const Icon(Icons.upload_rounded),
                                     label: const Text('Restore'),
                                     style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -447,10 +475,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Expanded(
                                     child: Text(
                                       'Backup creates a .zip archive of your data. Restore will overwrite existing data.',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: scheme.onSurfaceVariant,
-                                        height: 1.4,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: scheme.onSurfaceVariant,
+                                            height: 1.4,
+                                          ),
                                     ),
                                   ),
                                 ],
@@ -461,102 +492,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     const SizedBox(height: 100), // spacer for bottom bar
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: AnimatedSlide(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          offset: _dirty ? Offset.zero : const Offset(0, 1),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 300),
-            opacity: _dirty ? 1 : 0,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    scheme.surface.withOpacity(0.9),
-                    scheme.surface,
                   ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 20,
-                    color: Colors.black.withOpacity(0.1),
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: scheme.secondaryContainer.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(
-                      Icons.pending_actions_rounded,
-                      color: scheme.secondary,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Unsaved Changes',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          'Tap save to apply your settings',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  FilledButton.icon(
-                    onPressed: _busy ? null : _save,
-                    icon: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: _busy
-                          ? SizedBox(
-                              key: const ValueKey('loading'),
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: scheme.onPrimary,
-                              ),
-                            )
-                          : const Icon(
-                              Icons.save_rounded,
-                              key: ValueKey('save'),
-                            ),
-                    ),
-                    label: Text(_busy ? 'Saving...' : 'Save'),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    ),
-                  ),
-                ],
               ),
             ),
           ),
