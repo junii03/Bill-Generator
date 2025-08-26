@@ -654,14 +654,19 @@ class _NewBillScreenState extends State<NewBillScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.tune_rounded, color: scheme.secondary, size: 24),
+                          Icon(
+                            Icons.tune_rounded,
+                            color: scheme.secondary,
+                            size: 24,
+                          ),
                           const SizedBox(width: 12),
                           Text(
                             'Cost Override (Optional)',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: scheme.onSurface,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: scheme.onSurface,
+                                ),
                           ),
                         ],
                       ),
@@ -670,10 +675,15 @@ class _NewBillScreenState extends State<NewBillScreen> {
                         controller: _costCtrl,
                         decoration: InputDecoration(
                           labelText: 'Custom Cost per Unit',
-                          hintText: 'Default: ${widget.consumer.costPerUnit.toStringAsFixed(2)}',
-                          prefixIcon: const Icon(Icons.currency_exchange_rounded),
+                          hintText:
+                              'Default: ${widget.consumer.costPerUnit.toStringAsFixed(2)}',
+                          prefixIcon: const Icon(
+                            Icons.currency_exchange_rounded,
+                          ),
                         ),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                         validator: (v) {
                           if (v != null && v.trim().isNotEmpty) {
                             final d = double.tryParse(v.trim());
@@ -706,14 +716,19 @@ class _NewBillScreenState extends State<NewBillScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.camera_alt_rounded, color: scheme.tertiary, size: 24),
+                          Icon(
+                            Icons.camera_alt_rounded,
+                            color: scheme.tertiary,
+                            size: 24,
+                          ),
                           const SizedBox(width: 12),
                           Text(
                             'Meter Images',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: scheme.onSurface,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: scheme.onSurface,
+                                ),
                           ),
                         ],
                       ),
@@ -734,7 +749,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                                   icon: const Icon(Icons.add_a_photo_rounded),
                                   label: const Text('Add Photo'),
                                   style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -755,7 +772,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                                   icon: const Icon(Icons.add_a_photo_rounded),
                                   label: const Text('Add Photo'),
                                   style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -788,14 +807,19 @@ class _NewBillScreenState extends State<NewBillScreen> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.tune_rounded, color: scheme.secondary, size: 24),
+                              Icon(
+                                Icons.tune_rounded,
+                                color: scheme.secondary,
+                                size: 24,
+                              ),
                               const SizedBox(width: 12),
                               Text(
                                 'Adjustments',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: scheme.onSurface,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: scheme.onSurface,
+                                    ),
                               ),
                             ],
                           ),
@@ -811,19 +835,25 @@ class _NewBillScreenState extends State<NewBillScreen> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: scheme.surfaceContainerHighest.withOpacity(0.5),
+                            color: scheme.surfaceContainerHighest.withOpacity(
+                              0.5,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.info_outline_rounded, color: scheme.onSurfaceVariant),
+                              Icon(
+                                Icons.info_outline_rounded,
+                                color: scheme.onSurfaceVariant,
+                              ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
                                   'No adjustments added yet',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: scheme.onSurfaceVariant,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: scheme.onSurfaceVariant,
+                                      ),
                                 ),
                               ),
                             ],
@@ -835,7 +865,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                             margin: const EdgeInsets.only(bottom: 8),
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: scheme.surfaceContainerHighest.withOpacity(0.3),
+                              color: scheme.surfaceContainerHighest.withOpacity(
+                                0.3,
+                              ),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: scheme.outline.withOpacity(0.2),
@@ -845,21 +877,30 @@ class _NewBillScreenState extends State<NewBillScreen> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         e.value.label,
-                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
                                         '${e.value.amount >= 0 ? '+' : ''}${e.value.amount.toStringAsFixed(2)}',
-                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          color: e.value.amount >= 0 ? scheme.primary : scheme.error,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: e.value.amount >= 0
+                                                  ? scheme.primary
+                                                  : scheme.error,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -869,7 +910,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                                     Icons.delete_outline_rounded,
                                     color: scheme.error,
                                   ),
-                                  onPressed: () => setState(() => adjustments.removeAt(e.key)),
+                                  onPressed: () => setState(
+                                    () => adjustments.removeAt(e.key),
+                                  ),
                                 ),
                               ],
                             ),
