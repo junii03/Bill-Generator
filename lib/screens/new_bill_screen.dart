@@ -108,46 +108,120 @@ class _NewBillScreenState extends State<NewBillScreen> {
 
   Future<void> _chooseImage(bool previous) async {
     if (!mounted) return;
+    final scheme = Theme.of(context).colorScheme;
     await showModalBottomSheet(
       context: context,
-      builder: (ctx) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera),
-              title: const Text('Camera'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _pickImage(previous, camera: true);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Gallery'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _pickImage(previous, camera: false);
-              },
-            ),
-            if (previous && prevImagePath != null)
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: scheme.surface,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.add_a_photo_rounded,
+                        color: scheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      'Add ${previous ? 'Previous' : 'Current'} Reading Photo',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               ListTile(
-                leading: const Icon(Icons.restart_alt),
-                title: const Text('Clear / Reset'),
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: scheme.secondaryContainer.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.photo_camera_rounded,
+                    color: scheme.secondary,
+                    size: 20,
+                  ),
+                ),
+                title: const Text('Take Photo'),
+                subtitle: const Text('Capture with camera'),
                 onTap: () {
-                  setState(() => prevImagePath = null);
                   Navigator.pop(ctx);
+                  _pickImage(previous, camera: true);
                 },
               ),
-            if (!previous && currImagePath != null)
               ListTile(
-                leading: const Icon(Icons.restart_alt),
-                title: const Text('Clear / Reset'),
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: scheme.tertiaryContainer.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.photo_library_rounded,
+                    color: scheme.tertiary,
+                    size: 20,
+                  ),
+                ),
+                title: const Text('Choose from Gallery'),
+                subtitle: const Text('Select existing photo'),
                 onTap: () {
-                  setState(() => currImagePath = null);
                   Navigator.pop(ctx);
+                  _pickImage(previous, camera: false);
                 },
               ),
-          ],
+              if ((previous && prevImagePath != null) || (!previous && currImagePath != null))
+                ListTile(
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: scheme.errorContainer.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.delete_outline_rounded,
+                      color: scheme.error,
+                      size: 20,
+                    ),
+                  ),
+                  title: const Text('Remove Photo'),
+                  subtitle: const Text('Clear current selection'),
+                  onTap: () {
+                    setState(() {
+                      if (previous) {
+                        prevImagePath = null;
+                      } else {
+                        currImagePath = null;
+                      }
+                    });
+                    Navigator.pop(ctx);
+                  },
+                ),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
@@ -159,45 +233,102 @@ class _NewBillScreenState extends State<NewBillScreen> {
     final form = GlobalKey<FormState>();
     await showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Add Adjustment'),
-        content: Form(
-          key: form,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+      builder: (_) {
+        final scheme = Theme.of(context).colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: Row(
             children: [
-              TextFormField(
-                controller: labelCtrl,
-                decoration: const InputDecoration(labelText: 'Label'),
-                validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Required' : null,
-              ),
-              TextFormField(
-                controller: amountCtrl,
-                decoration: const InputDecoration(labelText: 'Amount (+/-)'),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Required';
-                  if (double.tryParse(v.trim()) == null) return 'Invalid';
-                  return null;
-                },
+                child: Icon(
+                  Icons.tune_rounded,
+                  color: scheme.primary,
+                  size: 20,
+                ),
               ),
+              const SizedBox(width: 16),
+              const Text('Add Adjustment'),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+          content: Form(
+            key: form,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: labelCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Adjustment Label',
+                    hintText: 'e.g., Discount, Late Fee',
+                    prefixIcon: Icon(Icons.label_outline_rounded),
+                  ),
+                  validator: (v) =>
+                      v == null || v.trim().isEmpty ? 'Label is required' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: amountCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Amount',
+                    hintText: 'Positive or negative',
+                    prefixIcon: Icon(Icons.attach_money_rounded),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return 'Amount is required';
+                    if (double.tryParse(v.trim()) == null) return 'Invalid number';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: scheme.primaryContainer.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 16,
+                        color: scheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Use positive values for charges, negative for discounts',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              if (form.currentState!.validate()) {
-                setState(() {
-                  adjustments.add(
-                    Adjustment(
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                if (form.currentState!.validate()) {
+                  setState(() {
+                    adjustments.add(
+                      Adjustment(
                       label: labelCtrl.text.trim(),
                       amount: double.parse(amountCtrl.text.trim()),
                     ),
@@ -206,10 +337,11 @@ class _NewBillScreenState extends State<NewBillScreen> {
                 Navigator.pop(context);
               }
             },
-            child: const Text('Add'),
+            child: const Text('Add Adjustment'),
           ),
         ],
-      ),
+      );
+      },
     );
   }
 
