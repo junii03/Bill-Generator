@@ -948,10 +948,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                             color: scheme.onPrimary,
                           ),
                         )
-                      : const Icon(
-                          Icons.save_rounded,
-                          key: ValueKey('save'),
-                        ),
+                      : const Icon(Icons.save_rounded, key: ValueKey('save')),
                 ),
                 label: Text(saving ? 'Creating Bill...' : 'Create Bill'),
                 style: FilledButton.styleFrom(
@@ -963,7 +960,8 @@ class _NewBillScreenState extends State<NewBillScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-          ],
+            ],
+          ),
         ),
       ),
     );
