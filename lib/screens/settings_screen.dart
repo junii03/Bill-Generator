@@ -41,15 +41,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _busy = true);
     try {
       final file = await BackupService.createBackupArchive();
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Backup created: ${file.path}')));
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Backup failed: $e')));
+      }
     } finally {
       setState(() => _busy = false);
     }
@@ -60,21 +62,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       final restored = await BackupService.restoreFromArchive();
       if (!restored) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text('Restore cancelled')));
+        }
       } else {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Restore complete. Restart app.')),
           );
+        }
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Restore failed: $e')));
+      }
     } finally {
       setState(() => _busy = false);
     }
@@ -106,12 +111,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [scheme.surface.withOpacity(0.9), scheme.surface],
+                  colors: [
+                    scheme.surface.withValues(alpha: 0.9),
+                    scheme.surface,
+                  ],
                 ),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 20,
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     offset: const Offset(0, -4),
                   ),
                 ],
@@ -123,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: scheme.secondaryContainer.withOpacity(0.3),
+                      color: scheme.secondaryContainer.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -192,7 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             end: Alignment.bottomCenter,
             colors: [
               scheme.surface,
-              scheme.surfaceContainerHighest.withOpacity(0.1),
+              scheme.surfaceContainerHighest.withValues(alpha: 0.1),
             ],
           ),
         ),
@@ -210,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Material(
                       elevation: 3,
                       borderRadius: BorderRadius.circular(24),
-                      shadowColor: scheme.primary.withOpacity(0.1),
+                      shadowColor: scheme.primary.withValues(alpha: 0.1),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
@@ -219,7 +227,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             end: Alignment.bottomRight,
                             colors: [
                               scheme.surface,
-                              scheme.surfaceContainerHighest.withOpacity(0.3),
+                              scheme.surfaceContainerHighest.withValues(
+                                alpha: 0.3,
+                              ),
                             ],
                           ),
                         ),
@@ -291,10 +301,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
                                 color: scheme.surfaceContainerHighest
-                                    .withOpacity(0.5),
+                                    .withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: scheme.outline.withOpacity(0.2),
+                                  color: scheme.outline.withValues(alpha: 0.2),
                                 ),
                               ),
                               child: Row(
@@ -304,7 +314,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     height: 40,
                                     decoration: BoxDecoration(
                                       color: settings.darkMode
-                                          ? scheme.primary.withOpacity(0.2)
+                                          ? scheme.primary.withValues(
+                                              alpha: 0.2,
+                                            )
                                           : scheme.surfaceContainerHighest,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
@@ -366,7 +378,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Material(
                       elevation: 2,
                       borderRadius: BorderRadius.circular(20),
-                      shadowColor: Colors.black.withOpacity(0.05),
+                      shadowColor: Colors.black.withValues(alpha: 0.05),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -382,8 +394,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: scheme.tertiaryContainer.withOpacity(
-                                      0.3,
+                                    color: scheme.tertiaryContainer.withValues(
+                                      alpha: 0.3,
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -458,10 +470,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: scheme.primaryContainer.withOpacity(0.3),
+                                color: scheme.primaryContainer.withValues(
+                                  alpha: 0.3,
+                                ),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: scheme.primary.withOpacity(0.2),
+                                  color: scheme.primary.withValues(alpha: 0.2),
                                 ),
                               ),
                               child: Row(

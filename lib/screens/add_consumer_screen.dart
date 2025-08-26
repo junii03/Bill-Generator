@@ -52,7 +52,7 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
             end: Alignment.bottomCenter,
             colors: [
               scheme.surface,
-              scheme.surfaceContainerHighest.withOpacity(0.1),
+              scheme.surfaceContainerHighest.withValues(alpha: 0.1),
             ],
           ),
         ),
@@ -70,7 +70,7 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                       child: Material(
                         elevation: 4,
                         borderRadius: BorderRadius.circular(24),
-                        shadowColor: scheme.primary.withOpacity(0.1),
+                        shadowColor: scheme.primary.withValues(alpha: 0.1),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
@@ -79,7 +79,9 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                               end: Alignment.bottomRight,
                               colors: [
                                 scheme.surface,
-                                scheme.surfaceContainerHighest.withOpacity(0.3),
+                                scheme.surfaceContainerHighest.withValues(
+                                  alpha: 0.3,
+                                ),
                               ],
                             ),
                           ),
@@ -95,7 +97,10 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                                       height: 48,
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
-                                          colors: [scheme.primaryContainer, scheme.secondaryContainer],
+                                          colors: [
+                                            scheme.primaryContainer,
+                                            scheme.secondaryContainer,
+                                          ],
                                         ),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -108,10 +113,11 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                                     const SizedBox(width: 16),
                                     Text(
                                       'Consumer Details',
-                                      style: theme.textTheme.headlineSmall?.copyWith(
-                                        fontWeight: FontWeight.w700,
-                                        color: scheme.onSurface,
-                                      ),
+                                      style: theme.textTheme.headlineSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: scheme.onSurface,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -122,9 +128,12 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                                   decoration: const InputDecoration(
                                     labelText: 'Consumer Name',
                                     hintText: 'Enter full name',
-                                    prefixIcon: Icon(Icons.person_outline_rounded),
+                                    prefixIcon: Icon(
+                                      Icons.person_outline_rounded,
+                                    ),
                                   ),
-                                  validator: (v) => v == null || v.trim().isEmpty
+                                  validator: (v) =>
+                                      v == null || v.trim().isEmpty
                                       ? 'Consumer name is required'
                                       : null,
                                 ),
@@ -135,17 +144,25 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                                   decoration: const InputDecoration(
                                     labelText: 'Cost per Unit',
                                     hintText: 'e.g. 25.50 PKR/kWh',
-                                    prefixIcon: Icon(Icons.electric_bolt_rounded),
+                                    prefixIcon: Icon(
+                                      Icons.electric_bolt_rounded,
+                                    ),
                                   ),
-                                  keyboardType: const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  ),
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        decimal: true,
+                                      ),
                                   validator: (v) {
-                                    if (v == null || v.trim().isEmpty)
+                                    if (v == null || v.trim().isEmpty) {
                                       return 'Cost per unit is required';
+                                    }
                                     final d = double.tryParse(v.trim());
-                                    if (d == null) return 'Please enter a valid number';
-                                    if (d <= 0) return 'Cost must be greater than 0';
+                                    if (d == null) {
+                                      return 'Please enter a valid number';
+                                    }
+                                    if (d <= 0) {
+                                      return 'Cost must be greater than 0';
+                                    }
                                     return null;
                                   },
                                   onFieldSubmitted: (_) => _save(),
@@ -156,7 +173,9 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                                   height: _saving ? 3 : 0,
                                   child: _saving
                                       ? LinearProgressIndicator(
-                                          borderRadius: BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(
+                                            2,
+                                          ),
                                         )
                                       : const SizedBox.shrink(),
                                 ),
@@ -180,9 +199,13 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                                             key: ValueKey('save'),
                                           ),
                                   ),
-                                  label: Text(_saving ? 'Saving...' : 'Save Consumer'),
+                                  label: Text(
+                                    _saving ? 'Saving...' : 'Save Consumer',
+                                  ),
                                   style: FilledButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20,
+                                    ),
                                     textStyle: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -199,10 +222,10 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: scheme.primaryContainer.withOpacity(0.3),
+                        color: scheme.primaryContainer.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: scheme.primary.withOpacity(0.2),
+                          color: scheme.primary.withValues(alpha: 0.2),
                           width: 1,
                         ),
                       ),

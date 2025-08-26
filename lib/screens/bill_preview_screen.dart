@@ -50,9 +50,9 @@ class _BillPreviewScreenState extends State<BillPreviewScreen> {
       appBar: AppBar(
         title: Text(
           name,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
@@ -76,7 +76,7 @@ class _BillPreviewScreenState extends State<BillPreviewScreen> {
           gradient: LinearGradient(
             colors: [
               scheme.surface,
-              scheme.surfaceContainerHighest.withOpacity(0.2),
+              scheme.surfaceContainerHighest.withValues(alpha: 0.2),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -102,66 +102,67 @@ class _BillPreviewScreenState extends State<BillPreviewScreen> {
                 ),
               )
             : _error != null
-                ? Center(
-                    child: Container(
-                      margin: const EdgeInsets.all(32),
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: scheme.errorContainer.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: scheme.error.withOpacity(0.3),
-                        ),
+            ? Center(
+                child: Container(
+                  margin: const EdgeInsets.all(32),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: scheme.errorContainer.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: scheme.error.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.error_outline_rounded,
+                        size: 48,
+                        color: scheme.error,
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.error_outline_rounded,
-                            size: 48,
-                            color: scheme.error,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Failed to Load PDF',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      const SizedBox(height: 16),
+                      Text(
+                        'Failed to Load PDF',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: scheme.onErrorContainer,
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            _error!,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: scheme.onErrorContainer,
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                  )
-                : Container(
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                      const SizedBox(height: 8),
+                      Text(
+                        _error!,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: scheme.onErrorContainer,
                         ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: PdfViewPinch(
-                        controller: _controller,
-                        onDocumentLoaded: (doc) {},
-                        onPageChanged: (page) {},
                       ),
-                    ),
+                    ],
                   ),
+                ),
+              )
+            : Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: PdfViewPinch(
+                    controller: _controller,
+                    onDocumentLoaded: (doc) {},
+                    onPageChanged: (page) {},
+                  ),
+                ),
+              ),
       ),
     );
   }

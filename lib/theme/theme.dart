@@ -36,7 +36,7 @@ class AppTheme {
           backgroundColor: baseScheme.primary,
           foregroundColor: baseScheme.onPrimary,
           elevation: 2,
-          shadowColor: baseScheme.primary.withOpacity(0.3),
+          shadowColor: baseScheme.primary.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -53,7 +53,7 @@ class AppTheme {
           backgroundColor: baseScheme.primary,
           foregroundColor: baseScheme.onPrimary,
           elevation: 1,
-          shadowColor: baseScheme.primary.withOpacity(0.2),
+          shadowColor: baseScheme.primary.withValues(alpha: 0.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -103,21 +103,26 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: baseScheme.surfaceContainerHighest,
         elevation: 4,
-        shadowColor: Colors.black.withOpacity(0.1),
+        shadowColor: Colors.black.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: baseScheme.surfaceContainerHighest.withOpacity(0.3),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        fillColor: baseScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: baseScheme.outline.withOpacity(0.2)),
+          borderSide: BorderSide(
+            color: baseScheme.outline.withValues(alpha: 0.2),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: baseScheme.primary, width: 2),
@@ -137,7 +142,7 @@ class AppTheme {
           fontWeight: FontWeight.w500,
         ),
         hintStyle: TextStyle(
-          color: baseScheme.onSurfaceVariant.withOpacity(0.7),
+          color: baseScheme.onSurfaceVariant.withValues(alpha: 0.7),
           fontFamily: fontFamily,
         ),
         prefixIconColor: baseScheme.onSurfaceVariant,
@@ -186,7 +191,7 @@ class AppTheme {
           backgroundColor: baseScheme.primary,
           foregroundColor: baseScheme.onPrimary,
           elevation: 2,
-          shadowColor: baseScheme.primary.withOpacity(0.3),
+          shadowColor: baseScheme.primary.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -203,7 +208,7 @@ class AppTheme {
           backgroundColor: baseScheme.primary,
           foregroundColor: baseScheme.onPrimary,
           elevation: 1,
-          shadowColor: baseScheme.primary.withOpacity(0.2),
+          shadowColor: baseScheme.primary.withValues(alpha: 0.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -253,21 +258,26 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: baseScheme.surface,
         elevation: 3,
-        shadowColor: Colors.black.withOpacity(0.08),
+        shadowColor: Colors.black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: baseScheme.surfaceContainerHighest.withOpacity(0.5),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        fillColor: baseScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: baseScheme.outline.withOpacity(0.3)),
+          borderSide: BorderSide(
+            color: baseScheme.outline.withValues(alpha: 0.3),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: baseScheme.primary, width: 2),
@@ -287,7 +297,7 @@ class AppTheme {
           fontWeight: FontWeight.w500,
         ),
         hintStyle: TextStyle(
-          color: baseScheme.onSurfaceVariant.withOpacity(0.7),
+          color: baseScheme.onSurfaceVariant.withValues(alpha: 0.7),
           fontFamily: fontFamily,
         ),
         prefixIconColor: baseScheme.onSurfaceVariant,

@@ -124,7 +124,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: scheme.primaryContainer.withOpacity(0.3),
+                        color: scheme.primaryContainer.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
@@ -148,7 +148,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: scheme.secondaryContainer.withOpacity(0.3),
+                    color: scheme.secondaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -169,7 +169,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: scheme.tertiaryContainer.withOpacity(0.3),
+                    color: scheme.tertiaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -192,7 +192,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: scheme.errorContainer.withOpacity(0.3),
+                      color: scheme.errorContainer.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -240,7 +240,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: scheme.primaryContainer.withOpacity(0.3),
+                  color: scheme.primaryContainer.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -282,10 +282,12 @@ class _NewBillScreenState extends State<NewBillScreen> {
                     signed: true,
                   ),
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty)
+                    if (v == null || v.trim().isEmpty) {
                       return 'Amount is required';
-                    if (double.tryParse(v.trim()) == null)
+                    }
+                    if (double.tryParse(v.trim()) == null) {
                       return 'Invalid number';
+                    }
                     return null;
                   },
                 ),
@@ -293,7 +295,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: scheme.primaryContainer.withOpacity(0.3),
+                    color: scheme.primaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -423,7 +425,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
             end: Alignment.bottomCenter,
             colors: [
               scheme.surface,
-              scheme.surfaceContainerHighest.withOpacity(0.1),
+              scheme.surfaceContainerHighest.withValues(alpha: 0.1),
             ],
           ),
         ),
@@ -438,7 +440,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                 child: Material(
                   elevation: 3,
                   borderRadius: BorderRadius.circular(20),
-                  shadowColor: scheme.primary.withOpacity(0.1),
+                  shadowColor: scheme.primary.withValues(alpha: 0.1),
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
@@ -446,8 +448,8 @@ class _NewBillScreenState extends State<NewBillScreen> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          scheme.primaryContainer.withOpacity(0.3),
-                          scheme.secondaryContainer.withOpacity(0.3),
+                          scheme.primaryContainer.withValues(alpha: 0.3),
+                          scheme.secondaryContainer.withValues(alpha: 0.3),
                         ],
                       ),
                     ),
@@ -501,7 +503,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: scheme.primary.withOpacity(0.1),
+                                  color: scheme.primary.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -527,7 +529,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
               Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                shadowColor: Colors.black.withOpacity(0.05),
+                shadowColor: Colors.black.withValues(alpha: 0.05),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -592,8 +594,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                                   ),
                               validator: (v) {
                                 if (v == null ||
-                                    double.tryParse(v.trim()) == null)
+                                    double.tryParse(v.trim()) == null) {
                                   return 'Required';
+                                }
                                 final curr = double.parse(v.trim());
                                 final prev =
                                     double.tryParse(_prevCtrl.text.trim()) ?? 0;
@@ -610,7 +613,9 @@ class _NewBillScreenState extends State<NewBillScreen> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: scheme.tertiaryContainer.withOpacity(0.3),
+                            color: scheme.tertiaryContainer.withValues(
+                              alpha: 0.3,
+                            ),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
@@ -642,7 +647,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
               Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                shadowColor: Colors.black.withOpacity(0.05),
+                shadowColor: Colors.black.withValues(alpha: 0.05),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -704,7 +709,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
               Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                shadowColor: Colors.black.withOpacity(0.05),
+                shadowColor: Colors.black.withValues(alpha: 0.05),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -792,7 +797,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
               Material(
                 elevation: 2,
                 borderRadius: BorderRadius.circular(20),
-                shadowColor: Colors.black.withOpacity(0.05),
+                shadowColor: Colors.black.withValues(alpha: 0.05),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -835,8 +840,8 @@ class _NewBillScreenState extends State<NewBillScreen> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: scheme.surfaceContainerHighest.withOpacity(
-                              0.5,
+                            color: scheme.surfaceContainerHighest.withValues(
+                              alpha: 0.5,
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -865,12 +870,12 @@ class _NewBillScreenState extends State<NewBillScreen> {
                             margin: const EdgeInsets.only(bottom: 8),
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: scheme.surfaceContainerHighest.withOpacity(
-                                0.3,
+                              color: scheme.surfaceContainerHighest.withValues(
+                                alpha: 0.3,
                               ),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: scheme.outline.withOpacity(0.2),
+                                color: scheme.outline.withValues(alpha: 0.2),
                               ),
                             ),
                             child: Row(
@@ -968,101 +973,6 @@ class _NewBillScreenState extends State<NewBillScreen> {
   }
 }
 
-class _ImageBox extends StatelessWidget {
-  final String? path;
-  final String label;
-  const _ImageBox({required this.path, required this.label});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 140,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(.4),
-        ),
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-      ),
-      child: path == null
-          ? Center(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.file(
-                File(path!),
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-            ),
-    );
-  }
-}
-
-class _TotalsPreview extends StatelessWidget {
-  final double consumed;
-  final double baseAmount;
-  final double adjustmentsTotal;
-  final double totalAmount;
-  const _TotalsPreview({
-    required this.consumed,
-    required this.baseAmount,
-    required this.adjustmentsTotal,
-    required this.totalAmount,
-  });
-  @override
-  Widget build(BuildContext context) {
-    final items = [
-      _KV('Consumed', '${consumed.toStringAsFixed(2)} kWh'),
-      _KV('Base', baseAmount.toStringAsFixed(2)),
-      _KV('Adjust.', adjustmentsTotal.toStringAsFixed(2)),
-      _KV('Total', totalAmount.toStringAsFixed(2), highlight: true),
-    ];
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Wrap(spacing: 24, runSpacing: 12, children: items),
-      ),
-    );
-  }
-}
-
-class _KV extends StatelessWidget {
-  final String k;
-  final String v;
-  final bool highlight;
-  const _KV(this.k, this.v, {this.highlight = false});
-  @override
-  Widget build(BuildContext context) {
-    final style = highlight
-        ? Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)
-        : Theme.of(context).textTheme.bodyMedium;
-    return SizedBox(
-      width: 120,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            k,
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 4),
-          Text(v, style: style),
-        ],
-      ),
-    );
-  }
-}
-
 class _ModernImageBox extends StatelessWidget {
   final String? path;
   final String label;
@@ -1080,8 +990,11 @@ class _ModernImageBox extends StatelessWidget {
       height: 160,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: scheme.outline.withOpacity(0.3), width: 1),
-        color: scheme.surfaceContainerHighest.withOpacity(0.3),
+        border: Border.all(
+          color: scheme.outline.withValues(alpha: 0.3),
+          width: 1,
+        ),
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
       ),
       child: path == null
           ? Column(
@@ -1091,7 +1004,7 @@ class _ModernImageBox extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: scheme.primaryContainer.withOpacity(0.3),
+                    color: scheme.primaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: scheme.primary, size: 24),
@@ -1128,7 +1041,7 @@ class _ModernImageBox extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: scheme.surface.withOpacity(0.9),
+                      color: scheme.surface.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -1183,7 +1096,7 @@ class _ModernTotalsPreview extends StatelessWidget {
     return Material(
       elevation: 3,
       borderRadius: BorderRadius.circular(20),
-      shadowColor: scheme.primary.withOpacity(0.1),
+      shadowColor: scheme.primary.withValues(alpha: 0.1),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -1191,8 +1104,8 @@ class _ModernTotalsPreview extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              scheme.primaryContainer.withOpacity(0.2),
-              scheme.tertiaryContainer.withOpacity(0.2),
+              scheme.primaryContainer.withValues(alpha: 0.2),
+              scheme.tertiaryContainer.withValues(alpha: 0.2),
             ],
           ),
         ),
@@ -1256,8 +1169,8 @@ class _ModernKV extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             color: isTotal
-                ? scheme.primary.withOpacity(0.2)
-                : scheme.surfaceContainerHighest.withOpacity(0.5),
+                ? scheme.primary.withValues(alpha: 0.2)
+                : scheme.surfaceContainerHighest.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(

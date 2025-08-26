@@ -106,11 +106,13 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.6),
+                color: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -123,7 +125,10 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
                   prefixIcon: Icon(Icons.search_rounded),
                   hintText: 'Search consumers...',
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 20,
+                  ),
                 ),
                 onChanged: (v) => setState(() => _query = v),
               ),
@@ -138,7 +143,9 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
             end: Alignment.bottomCenter,
             colors: [
               Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.1),
+              Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
             ],
           ),
         ),
@@ -166,7 +173,10 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Theme.of(context).colorScheme.error),
+            Icon(
+              Icons.warning_amber_rounded,
+              color: Theme.of(context).colorScheme.error,
+            ),
             const SizedBox(width: 12),
             const Text('Remove Consumer'),
           ],
@@ -211,7 +221,7 @@ class _ConsumerCard extends StatelessWidget {
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(24),
-        shadowColor: scheme.primary.withOpacity(0.1),
+        shadowColor: scheme.primary.withValues(alpha: 0.1),
         child: InkWell(
           borderRadius: BorderRadius.circular(24),
           onTap: () => onAction('bills'),
@@ -223,7 +233,7 @@ class _ConsumerCard extends StatelessWidget {
                 end: Alignment.bottomRight,
                 colors: [
                   scheme.surface,
-                  scheme.surfaceContainerHighest.withOpacity(0.3),
+                  scheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 ],
               ),
             ),
@@ -248,7 +258,7 @@ class _ConsumerCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: scheme.primary.withOpacity(0.2),
+                            color: scheme.primary.withValues(alpha: 0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -275,26 +285,33 @@ class _ConsumerCard extends StatelessWidget {
                       children: [
                         Text(
                           consumer.name,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: scheme.onSurface,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: scheme.onSurface,
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color: scheme.primaryContainer.withOpacity(0.3),
+                            color: scheme.primaryContainer.withValues(
+                              alpha: 0.3,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             '${consumer.costPerUnit.toStringAsFixed(2)} per unit',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: scheme.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: scheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                         ),
                       ],
@@ -302,7 +319,9 @@ class _ConsumerCard extends StatelessWidget {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      color: scheme.surfaceContainerHighest.withOpacity(0.5),
+                      color: scheme.surfaceContainerHighest.withValues(
+                        alpha: 0.5,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: PopupMenuButton<String>(
@@ -312,7 +331,11 @@ class _ConsumerCard extends StatelessWidget {
                           value: 'new_bill',
                           child: Row(
                             children: [
-                              Icon(Icons.receipt_long_rounded, size: 20, color: scheme.primary),
+                              Icon(
+                                Icons.receipt_long_rounded,
+                                size: 20,
+                                color: scheme.primary,
+                              ),
                               const SizedBox(width: 12),
                               const Text('New Bill'),
                             ],
@@ -322,7 +345,11 @@ class _ConsumerCard extends StatelessWidget {
                           value: 'bills',
                           child: Row(
                             children: [
-                              Icon(Icons.history_rounded, size: 20, color: scheme.secondary),
+                              Icon(
+                                Icons.history_rounded,
+                                size: 20,
+                                color: scheme.secondary,
+                              ),
                               const SizedBox(width: 12),
                               const Text('View Bills'),
                             ],
@@ -332,7 +359,11 @@ class _ConsumerCard extends StatelessWidget {
                           value: 'remove',
                           child: Row(
                             children: [
-                              Icon(Icons.delete_outline_rounded, size: 20, color: scheme.error),
+                              Icon(
+                                Icons.delete_outline_rounded,
+                                size: 20,
+                                color: scheme.error,
+                              ),
                               const SizedBox(width: 12),
                               const Text('Remove'),
                             ],
@@ -340,8 +371,13 @@ class _ConsumerCard extends StatelessWidget {
                         ),
                       ],
                       tooltip: 'More actions',
-                      icon: Icon(Icons.more_vert_rounded, color: scheme.onSurfaceVariant),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      icon: Icon(
+                        Icons.more_vert_rounded,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
                 ],
@@ -374,8 +410,8 @@ class _EmptyState extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    scheme.primaryContainer.withOpacity(0.3),
-                    scheme.secondaryContainer.withOpacity(0.3),
+                    scheme.primaryContainer.withValues(alpha: 0.3),
+                    scheme.secondaryContainer.withValues(alpha: 0.3),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(30),
@@ -409,7 +445,10 @@ class _EmptyState extends StatelessWidget {
               icon: const Icon(Icons.person_add_alt_1_rounded),
               label: const Text('Add Your First Consumer'),
               style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 20,
+                ),
                 textStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -418,7 +457,8 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             OutlinedButton.icon(
-              onPressed: () => Navigator.pushNamed(context, SettingsScreen.route),
+              onPressed: () =>
+                  Navigator.pushNamed(context, SettingsScreen.route),
               icon: const Icon(Icons.settings_rounded),
               label: const Text('Configure Settings'),
             ),
