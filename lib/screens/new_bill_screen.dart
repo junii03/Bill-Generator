@@ -1243,9 +1243,9 @@ class _ModernKV extends StatelessWidget {
   final String value;
   final IconData icon;
   final bool isTotal;
-  
+
   const _ModernKV(this.label, this.value, this.icon, {this.isTotal = false});
-  
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
