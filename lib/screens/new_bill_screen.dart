@@ -1067,8 +1067,12 @@ class _ModernImageBox extends StatelessWidget {
   final String? path;
   final String label;
   final IconData icon;
-  const _ModernImageBox({required this.path, required this.label, required this.icon});
-  
+  const _ModernImageBox({
+    required this.path,
+    required this.label,
+    required this.icon,
+  });
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -1076,10 +1080,7 @@ class _ModernImageBox extends StatelessWidget {
       height: 160,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: scheme.outline.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: scheme.outline.withOpacity(0.3), width: 1),
         color: scheme.surfaceContainerHighest.withOpacity(0.3),
       ),
       child: path == null
@@ -1093,11 +1094,7 @@ class _ModernImageBox extends StatelessWidget {
                     color: scheme.primaryContainer.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    icon,
-                    color: scheme.primary,
-                    size: 24,
-                  ),
+                  child: Icon(icon, color: scheme.primary, size: 24),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -1126,7 +1123,10 @@ class _ModernImageBox extends StatelessWidget {
                   top: 8,
                   left: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: scheme.surface.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(8),
@@ -1158,14 +1158,26 @@ class _ModernTotalsPreview extends StatelessWidget {
     required this.adjustmentsTotal,
     required this.totalAmount,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final items = [
-      _ModernKV('Consumption', '${consumed.toStringAsFixed(2)} kWh', Icons.electric_bolt_rounded),
-      _ModernKV('Base Amount', baseAmount.toStringAsFixed(2), Icons.attach_money_rounded),
-      _ModernKV('Adjustments', adjustmentsTotal.toStringAsFixed(2), Icons.tune_rounded),
+      _ModernKV(
+        'Consumption',
+        '${consumed.toStringAsFixed(2)} kWh',
+        Icons.electric_bolt_rounded,
+      ),
+      _ModernKV(
+        'Base Amount',
+        baseAmount.toStringAsFixed(2),
+        Icons.attach_money_rounded,
+      ),
+      _ModernKV(
+        'Adjustments',
+        adjustmentsTotal.toStringAsFixed(2),
+        Icons.tune_rounded,
+      ),
     ];
 
     return Material(
@@ -1190,7 +1202,11 @@ class _ModernTotalsPreview extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.receipt_long_rounded, color: scheme.primary, size: 24),
+                Icon(
+                  Icons.receipt_long_rounded,
+                  color: scheme.primary,
+                  size: 24,
+                ),
                 const SizedBox(width: 12),
                 Text(
                   'Bill Summary',
@@ -1202,10 +1218,12 @@ class _ModernTotalsPreview extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: item,
-            )),
+            ...items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: item,
+              ),
+            ),
             const Divider(height: 24),
             _ModernKV(
               'Total Amount',
