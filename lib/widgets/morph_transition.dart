@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
@@ -17,11 +18,28 @@ class MorphTransition {
     BuildContext fromHeroContext,
     BuildContext toHeroContext,
   ) {
-    // Use a cross-fade + rounded rect clip + blur + elevation for a modern morph.
+    // Enhanced morph with dynamic blur, 3D rotation, and perspective transforms
     return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
         final t = Curves.easeInOut.transform(animation.value);
+
+        // Dynamic blur with cubic curve for stronger depth effect
+        final blurT = Curves.easeInOutCubic.transform(animation.value);
+        final blurSigma = 12.0 * (1 - blurT); // Increased from 2.0 to 12.0
+
+        // 3D rotation calculation - peaks at mid-transition (t=0.5)
+        final rotationT = math.sin(animation.value * math.pi);
+        final rotationAngle = rotationT * 0.21; // ~12 degrees in radians
+
+        // Rotation direction based on flight direction
+        final rotationDirection = flightDirection == HeroFlightDirection.push
+            ? 1.0
+            : -1.0;
+
+        // Scale for additional depth perception
+        final scale = 0.92 + (0.08 * t); // Scale from 0.92 to 1.0
+
         final width = lerpDouble(
           _widgetSize(fromHeroContext).width,
           _widgetSize(toHeroContext).width,
@@ -47,37 +65,44 @@ class MorphTransition {
         return Opacity(
           opacity: 0.95 + 0.05 * t,
           child: Center(
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: ClipRRect(
-                borderRadius: radius,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // subtle blurred backdrop for perceived depth
-                    Positioned.fill(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 2.0 * (1 - t),
-                          sigmaY: 2.0 * (1 - t),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.002) // Perspective for 3D effect
+                ..rotateY(rotationAngle * rotationDirection)
+                ..scale(scale),
+              child: SizedBox(
+                width: width,
+                height: height,
+                child: ClipRRect(
+                  borderRadius: radius,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      // Enhanced blurred backdrop for dramatic depth
+                      Positioned.fill(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: blurSigma,
+                            sigmaY: blurSigma,
+                          ),
+                          child: Container(color: bg.withOpacity(0.7)),
                         ),
-                        child: Container(color: bg.withOpacity(0.7)),
                       ),
-                    ),
-                    // Material elevation animation
-                    Center(
-                      child: AnimatedPhysicalModel(
-                        duration: const Duration(milliseconds: 300),
-                        shape: BoxShape.rectangle,
-                        elevation: lerpDouble(2, 14, t)!,
-                        color: bg,
-                        shadowColor: Colors.black.withOpacity(0.2),
-                        borderRadius: radius,
-                        child: (toHeroContext.widget as Hero).child,
+                      // Material elevation animation
+                      Center(
+                        child: AnimatedPhysicalModel(
+                          duration: const Duration(milliseconds: 300),
+                          shape: BoxShape.rectangle,
+                          elevation: lerpDouble(2, 14, t)!,
+                          color: bg,
+                          shadowColor: Colors.black.withOpacity(0.2),
+                          borderRadius: radius,
+                          child: (toHeroContext.widget as Hero).child,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
