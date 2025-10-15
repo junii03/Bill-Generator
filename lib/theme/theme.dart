@@ -22,7 +22,7 @@ class AppTheme {
         centerTitle: false,
         elevation: 0,
         scrolledUnderElevation: 1,
-        backgroundColor: baseScheme.surface,
+        backgroundColor: Colors.transparent,
         foregroundColor: baseScheme.onSurface,
         titleTextStyle: TextStyle(
           fontFamily: fontFamily,
