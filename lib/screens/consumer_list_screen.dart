@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../widgets/morph_transition.dart';
 import '../models/consumer.dart';
 import '../services/database_service.dart';
 import 'add_consumer_screen.dart';
@@ -243,6 +244,7 @@ class _ConsumerCard extends StatelessWidget {
                 children: [
                   Hero(
                     tag: 'consumer-${consumer.id}',
+                    flightShuttleBuilder: MorphTransition.flightShuttleBuilder,
                     child: Container(
                       width: 56,
                       height: 56,

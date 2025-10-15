@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/morph_transition.dart';
 import '../services/database_service.dart';
 import '../models/consumer.dart';
 
@@ -67,6 +68,8 @@ class _AddConsumerScreenState extends State<AddConsumerScreen> {
                   children: [
                     Hero(
                       tag: 'add-consumer-card',
+                      flightShuttleBuilder:
+                          MorphTransition.flightShuttleBuilder,
                       child: Material(
                         elevation: 4,
                         borderRadius: BorderRadius.circular(24),

@@ -9,6 +9,7 @@ import '../services/database_service.dart';
 import '../services/image_service.dart';
 import '../services/settings_service.dart';
 import 'bill_detail_screen.dart';
+import '../widgets/morph_transition.dart';
 
 class NewBillScreen extends StatefulWidget {
   final Consumer consumer;
@@ -437,6 +438,7 @@ class _NewBillScreenState extends State<NewBillScreen> {
               // Consumer Info Header
               Hero(
                 tag: 'consumer-${widget.consumer.id}',
+                flightShuttleBuilder: MorphTransition.flightShuttleBuilder,
                 child: Material(
                   elevation: 3,
                   borderRadius: BorderRadius.circular(20),
@@ -929,12 +931,25 @@ class _NewBillScreenState extends State<NewBillScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Totals Preview
-              _ModernTotalsPreview(
-                consumed: consumed,
-                baseAmount: baseAmount,
-                adjustmentsTotal: adjustmentsTotal + defaultTaxAmount,
-                totalAmount: totalAmount + defaultTaxAmount,
+              // Totals Preview (Animated when values change)
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 360),
+                transitionBuilder: (child, anim) => ScaleTransition(
+                  scale: CurvedAnimation(
+                    parent: anim,
+                    curve: Curves.easeOutBack,
+                  ),
+                  child: FadeTransition(opacity: anim, child: child),
+                ),
+                child: KeyedSubtree(
+                  key: ValueKey<double>(totalAmount + defaultTaxAmount),
+                  child: _ModernTotalsPreview(
+                    consumed: consumed,
+                    baseAmount: baseAmount,
+                    adjustmentsTotal: adjustmentsTotal + defaultTaxAmount,
+                    totalAmount: totalAmount + defaultTaxAmount,
+                  ),
+                ),
               ),
               const SizedBox(height: 32),
 
