@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bill_generator/widgets/glass_card.dart';
+import '../widgets/morph_transition.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:provider/provider.dart' hide Consumer;
 import '../services/database_service.dart';
@@ -224,7 +226,8 @@ class _HeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
+    return GlassCard(
+      borderRadius: 16,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -232,10 +235,14 @@ class _HeaderCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: scheme.primaryContainer,
-                  foregroundColor: scheme.onPrimaryContainer,
-                  child: Text(consumer.name.substring(0, 1).toUpperCase()),
+                Hero(
+                  tag: 'consumer-${consumer.id}',
+                  flightShuttleBuilder: MorphTransition.flightShuttleBuilder,
+                  child: CircleAvatar(
+                    backgroundColor: scheme.primaryContainer,
+                    foregroundColor: scheme.onPrimaryContainer,
+                    child: Text(consumer.name.substring(0, 1).toUpperCase()),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -290,7 +297,8 @@ class _AmountSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
+    return GlassCard(
+      borderRadius: 16,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

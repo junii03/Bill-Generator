@@ -1,6 +1,8 @@
 import 'package:bill_generator/screens/bill_preview_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bill_generator/widgets/glass_card.dart';
+import '../widgets/morph_transition.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/consumer.dart';
 import '../models/bill.dart';
@@ -360,46 +362,76 @@ class _BillCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onOpen,
-        onLongPress: onLongPress,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-          child: Row(
-            children: [
-              Icon(Icons.receipt_outlined, color: scheme.primary, size: 32),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total: ${bill.totalAmount.toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
+    return GlassCard(
+      borderRadius: 16,
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onOpen,
+          onLongPress: onLongPress,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+            child: Row(
+              children: [
+                Hero(
+                  tag: 'bill-${bill.id}',
+                  flightShuttleBuilder: MorphTransition.flightShuttleBuilder,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          scheme.primaryContainer,
+                          scheme.secondaryContainer,
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      fmt.format(bill.createdAt),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              opening
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.picture_as_pdf_outlined),
-            ],
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Total: ${bill.totalAmount.toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        fmt.format(bill.createdAt),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: opening
+                      ? const SizedBox(
+                          key: ValueKey('loading'),
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(
+                          Icons.picture_as_pdf_outlined,
+                          key: ValueKey('icon'),
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

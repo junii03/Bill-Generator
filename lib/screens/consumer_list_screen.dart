@@ -4,6 +4,7 @@ import '../widgets/morph_transition.dart';
 import '../models/consumer.dart';
 import '../services/database_service.dart';
 import 'add_consumer_screen.dart';
+import 'package:bill_generator/widgets/glass_card.dart';
 import 'new_bill_screen.dart';
 import 'bills_for_consumer_screen.dart';
 import 'settings_screen.dart';
@@ -49,45 +50,51 @@ class _ConsumerListScreenState extends State<ConsumerListScreen> {
         .where((c) => c.name.toLowerCase().contains(_query.toLowerCase()))
         .toList();
 
-    final body = loading
-        ? const Center(child: CircularProgressIndicator())
-        : filtered.isEmpty
-        ? _EmptyState(onAdd: _addConsumer)
-        : RefreshIndicator(
-            onRefresh: _load,
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
-              itemCount: filtered.length,
-              itemBuilder: (c, i) {
-                final consumer = filtered[i];
-                return _ConsumerCard(
-                  consumer: consumer,
-                  onAction: (v) async {
-                    if (v == 'new_bill') {
-                      await Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (_) => NewBillScreen(consumer: consumer),
-                        ),
-                      );
-                    } else if (v == 'bills') {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (_) =>
-                              BillsForConsumerScreen(consumer: consumer),
-                        ),
-                      );
-                    } else if (v == 'remove') {
-                      await _removeConsumer(consumer);
+    final body = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 500),
+      switchInCurve: Curves.easeInOutCubic,
+      switchOutCurve: Curves.easeInOutCubic,
+      child: loading
+          ? const Center(child: CircularProgressIndicator())
+          : filtered.isEmpty
+          ? _EmptyState(onAdd: _addConsumer)
+          : RefreshIndicator(
+              onRefresh: _load,
+              child: ListView.builder(
+                key: ValueKey(filtered.length),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+                itemCount: filtered.length,
+                itemBuilder: (c, i) {
+                  final consumer = filtered[i];
+                  return _ConsumerCard(
+                    consumer: consumer,
+                    onAction: (v) async {
+                      if (v == 'new_bill') {
+                        await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (_) => NewBillScreen(consumer: consumer),
+                          ),
+                        );
+                      } else if (v == 'bills') {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (_) =>
+                                BillsForConsumerScreen(consumer: consumer),
+                          ),
+                        );
+                      } else if (v == 'remove') {
+                        await _removeConsumer(consumer);
+                        _load();
+                      }
                       _load();
-                    }
-                    _load();
-                  },
-                );
-              },
+                    },
+                  );
+                },
+              ),
             ),
-          );
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -217,27 +224,17 @@ class _ConsumerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+    return GlassCard(
+      borderRadius: 24,
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Material(
-        elevation: 2,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(24),
-        shadowColor: scheme.primary.withValues(alpha: 0.1),
         child: InkWell(
           borderRadius: BorderRadius.circular(24),
           onTap: () => onAction('bills'),
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  scheme.surface,
-                  scheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                ],
-              ),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
@@ -260,7 +257,7 @@ class _ConsumerCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: scheme.primary.withValues(alpha: 0.2),
+                            color: scheme.primary.withOpacity(0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -288,98 +285,66 @@ class _ConsumerCard extends StatelessWidget {
                         Text(
                           consumer.name,
                           style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: scheme.onSurface,
-                              ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: scheme.primaryContainer.withValues(
-                              alpha: 0.3,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            '${consumer.costPerUnit.toStringAsFixed(2)} per unit',
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: scheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ),
+                        // ...add more info here if needed...
                       ],
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: scheme.surfaceContainerHighest.withValues(
-                        alpha: 0.5,
+                  PopupMenuButton<String>(
+                    color: scheme.surfaceContainer.withValues(alpha: 0.55),
+                    onSelected: onAction,
+                    itemBuilder: (_) => [
+                      PopupMenuItem(
+                        value: 'new_bill',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.receipt_long_rounded,
+                              size: 20,
+                              color: scheme.primary,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('New Bill'),
+                          ],
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(12),
+                      PopupMenuItem(
+                        value: 'bills',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.history_rounded,
+                              size: 20,
+                              color: scheme.secondary,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('View Bills'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'remove',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.delete_outline_rounded,
+                              size: 20,
+                              color: scheme.error,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('Remove'),
+                          ],
+                        ),
+                      ),
+                    ],
+                    tooltip: 'More actions',
+                    icon: Icon(
+                      Icons.more_vert_rounded,
+                      color: scheme.onSurfaceVariant,
                     ),
-                    child: PopupMenuButton<String>(
-                      onSelected: onAction,
-                      itemBuilder: (_) => [
-                        PopupMenuItem(
-                          value: 'new_bill',
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.receipt_long_rounded,
-                                size: 20,
-                                color: scheme.primary,
-                              ),
-                              const SizedBox(width: 12),
-                              const Text('New Bill'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'bills',
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.history_rounded,
-                                size: 20,
-                                color: scheme.secondary,
-                              ),
-                              const SizedBox(width: 12),
-                              const Text('View Bills'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'remove',
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.delete_outline_rounded,
-                                size: 20,
-                                color: scheme.error,
-                              ),
-                              const SizedBox(width: 12),
-                              const Text('Remove'),
-                            ],
-                          ),
-                        ),
-                      ],
-                      tooltip: 'More actions',
-                      icon: Icon(
-                        Icons.more_vert_rounded,
-                        color: scheme.onSurfaceVariant,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                 ],
@@ -390,6 +355,8 @@ class _ConsumerCard extends StatelessWidget {
       ),
     );
   }
+
+  // Removed invalid trailing PopupMenuItem and related code after _ConsumerCard
 }
 
 class _EmptyState extends StatelessWidget {
